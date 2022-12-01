@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css"><link rel="stylesheet" href="css/L.Control.Locate.min.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-measure.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <header class="site-header">
+            <div class="site-identity">
+              <a href="#"><img src="https://luk.staff.ugm.ac.id/logo/UGM/Resmi/Hitam-putih.gif" alt="Peta Ketersediaan Layanan InaCORS" /></a>
+              <h1><a href="#">Peta Ketersediaan Layanan InaCORS</a></h1>
+            </div>  
+            <nav class="site-navigation">
+              <ul class="nav">
+                <li><a href="#">Tentang</a></li> 
+                 <li><a href="#">Team</a></li> 
+              </ul>
+            </nav>
+          </header>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script><script src="js/L.Control.Locate.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-measure.js"></script>
+        <script src="data/KetersediaanSemuaMinggu_1.js"></script>
+        <script src="data/KetersediaanMinggu1_2.js"></script>
+        <script src="data/StasiunCORS_3.js"></script>
+        <script>
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        }).fitBounds([[-17.55158604378609,93.71887811964041],[12.714243398964875,141.85071839708195]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        L.control.locate({locateOptions: {maxZoom: 19}}).addTo(map);
+        var measureControl = new L.Control.Measure({
+            position: 'topleft',
+            primaryLengthUnit: 'meters',
+            secondaryLengthUnit: 'kilometers',
+            primaryAreaUnit: 'sqmeters',
+            secondaryAreaUnit: 'hectares'
+        });
+        measureControl.addTo(map);
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .className += ' fas fa-ruler';
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        map.createPane('pane_GoogleSatellite_0');
+        map.getPane('pane_GoogleSatellite_0').style.zIndex = 400;
+        var layer_GoogleSatellite_0 = L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+            pane: 'pane_GoogleSatellite_0',
+            opacity: 1.0,
+            attribution: '',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 19
+        });
+        layer_GoogleSatellite_0;
+        map.addLayer(layer_GoogleSatellite_0);
+        function pop_KetersediaanSemuaMinggu_1(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Stasiun</th>\
+                        <td>' + (feature.properties['Stasiun'] !== null ? autolinker.link(feature.properties['Stasiun'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Lintang</th>\
+                        <td>' + (feature.properties['Lintang'] !== null ? autolinker.link(feature.properties['Lintang'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Bujur</th>\
+                        <td>' + (feature.properties['Bujur'] !== null ? autolinker.link(feature.properties['Bujur'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">All</th>\
+                        <td>' + (feature.properties['All'] !== null ? autolinker.link(feature.properties['All'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">M1</th>\
+                        <td>' + (feature.properties['M1'] !== null ? autolinker.link(feature.properties['M1'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['M2'] !== null ? autolinker.link(feature.properties['M2'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['M3'] !== null ? autolinker.link(feature.properties['M3'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['M4'] !== null ? autolinker.link(feature.properties['M4'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['M5'] !== null ? autolinker.link(feature.properties['M5'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['M6'] !== null ? autolinker.link(feature.properties['M6'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['BUFF_DIST'] !== null ? autolinker.link(feature.properties['BUFF_DIST'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ORIG_FID'] !== null ? autolinker.link(feature.properties['ORIG_FID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_KetersediaanSemuaMinggu_1_0(feature) {
+            if (feature.properties['All'] >= 0.000000 && feature.properties['All'] <= 0.200000 ) {
+                return {
+                pane: 'pane_KetersediaanSemuaMinggu_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(254,235,226,1.0)',
+                interactive: false,
+            }
+            }
+            if (feature.properties['All'] >= 0.200000 && feature.properties['All'] <= 0.400000 ) {
+                return {
+                pane: 'pane_KetersediaanSemuaMinggu_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(251,180,185,1.0)',
+                interactive: false,
+            }
+            }
+            if (feature.properties['All'] >= 0.400000 && feature.properties['All'] <= 0.600000 ) {
+                return {
+                pane: 'pane_KetersediaanSemuaMinggu_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(247,104,161,1.0)',
+                interactive: false,
+            }
+            }
+            if (feature.properties['All'] >= 0.600000 && feature.properties['All'] <= 0.800000 ) {
+                return {
+                pane: 'pane_KetersediaanSemuaMinggu_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(197,27,138,1.0)',
+                interactive: false,
+            }
+            }
+            if (feature.properties['All'] >= 0.800000 && feature.properties['All'] <= 1.000000 ) {
+                return {
+                pane: 'pane_KetersediaanSemuaMinggu_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(122,1,119,1.0)',
+                interactive: false,
+            }
+            }
+        }
+        map.createPane('pane_KetersediaanSemuaMinggu_1');
+        map.getPane('pane_KetersediaanSemuaMinggu_1').style.zIndex = 401;
+        map.getPane('pane_KetersediaanSemuaMinggu_1').style['mix-blend-mode'] = 'normal';
+        var layer_KetersediaanSemuaMinggu_1 = new L.geoJson(json_KetersediaanSemuaMinggu_1, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_KetersediaanSemuaMinggu_1',
+            layerName: 'layer_KetersediaanSemuaMinggu_1',
+            pane: 'pane_KetersediaanSemuaMinggu_1',
+            onEachFeature: pop_KetersediaanSemuaMinggu_1,
+            style: style_KetersediaanSemuaMinggu_1_0,
+        });
+        bounds_group.addLayer(layer_KetersediaanSemuaMinggu_1);
+        map.addLayer(layer_KetersediaanSemuaMinggu_1);
+        function pop_KetersediaanMinggu1_2(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Stasiun'] !== null ? autolinker.link(feature.properties['Stasiun'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Lintang'] !== null ? autolinker.link(feature.properties['Lintang'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Bujur'] !== null ? autolinker.link(feature.properties['Bujur'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['All'] !== null ? autolinker.link(feature.properties['All'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['M1'] !== null ? autolinker.link(feature.properties['M1'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['M2'] !== null ? autolinker.link(feature.properties['M2'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['M3'] !== null ? autolinker.link(feature.properties['M3'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['M4'] !== null ? autolinker.link(feature.properties['M4'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['M5'] !== null ? autolinker.link(feature.properties['M5'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['M6'] !== null ? autolinker.link(feature.properties['M6'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['BUFF_DIST'] !== null ? autolinker.link(feature.properties['BUFF_DIST'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ORIG_FID'] !== null ? autolinker.link(feature.properties['ORIG_FID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_KetersediaanMinggu1_2_0(feature) {
+            if (feature.properties['M1'] >= 0.000000 && feature.properties['M1'] <= 0.200000 ) {
+                return {
+                pane: 'pane_KetersediaanMinggu1_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(254,235,226,1.0)',
+                interactive: false,
+            }
+            }
+            if (feature.properties['M1'] >= 0.200000 && feature.properties['M1'] <= 0.400000 ) {
+                return {
+                pane: 'pane_KetersediaanMinggu1_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(251,180,185,1.0)',
+                interactive: false,
+            }
+            }
+            if (feature.properties['M1'] >= 0.400000 && feature.properties['M1'] <= 0.600000 ) {
+                return {
+                pane: 'pane_KetersediaanMinggu1_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(247,104,161,1.0)',
+                interactive: false,
+            }
+            }
+            if (feature.properties['M1'] >= 0.600000 && feature.properties['M1'] <= 0.800000 ) {
+                return {
+                pane: 'pane_KetersediaanMinggu1_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(197,27,138,1.0)',
+                interactive: false,
+            }
+            }
+            if (feature.properties['M1'] >= 0.800000 && feature.properties['M1'] <= 1.000000 ) {
+                return {
+                pane: 'pane_KetersediaanMinggu1_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(122,1,119,1.0)',
+                interactive: false,
+            }
+            }
+        }
+        map.createPane('pane_KetersediaanMinggu1_2');
+        map.getPane('pane_KetersediaanMinggu1_2').style.zIndex = 402;
+        map.getPane('pane_KetersediaanMinggu1_2').style['mix-blend-mode'] = 'normal';
+        var layer_KetersediaanMinggu1_2 = new L.geoJson(json_KetersediaanMinggu1_2, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_KetersediaanMinggu1_2',
+            layerName: 'layer_KetersediaanMinggu1_2',
+            pane: 'pane_KetersediaanMinggu1_2',
+            onEachFeature: pop_KetersediaanMinggu1_2,
+            style: style_KetersediaanMinggu1_2_0,
+        });
+        bounds_group.addLayer(layer_KetersediaanMinggu1_2);
+        map.addLayer(layer_KetersediaanMinggu1_2);
+        function pop_StasiunCORS_3(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Stasiun</th>\
+                        <td>' + (feature.properties['Stasiun'] !== null ? autolinker.link(feature.properties['Stasiun'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Lintang</th>\
+                        <td>' + (feature.properties['Lintang'] !== null ? autolinker.link(feature.properties['Lintang'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Bujur</th>\
+                        <td>' + (feature.properties['Bujur'] !== null ? autolinker.link(feature.properties['Bujur'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">All</th>\
+                        <td>' + (feature.properties['All'] !== null ? autolinker.link(feature.properties['All'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">M1</th>\
+                        <td>' + (feature.properties['M1'] !== null ? autolinker.link(feature.properties['M1'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_StasiunCORS_3_0() {
+            return {
+                pane: 'pane_StasiunCORS_3',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(243,166,178,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_StasiunCORS_3');
+        map.getPane('pane_StasiunCORS_3').style.zIndex = 403;
+        map.getPane('pane_StasiunCORS_3').style['mix-blend-mode'] = 'normal';
+        var layer_StasiunCORS_3 = new L.geoJson(json_StasiunCORS_3, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_StasiunCORS_3',
+            layerName: 'layer_StasiunCORS_3',
+            pane: 'pane_StasiunCORS_3',
+            onEachFeature: pop_StasiunCORS_3,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_StasiunCORS_3_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_StasiunCORS_3);
+        map.addLayer(layer_StasiunCORS_3);
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'<img src="legend/StasiunCORS_3.png" /> Stasiun CORS': layer_StasiunCORS_3,'Ketersediaan Minggu 1<br /><table><tr><td style="text-align: center;"><img src="legend/KetersediaanMinggu1_2_0020.png" /></td><td>0 - 0.2</td></tr><tr><td style="text-align: center;"><img src="legend/KetersediaanMinggu1_2_02041.png" /></td><td>0.2 - 0.4</td></tr><tr><td style="text-align: center;"><img src="legend/KetersediaanMinggu1_2_04062.png" /></td><td>0.4 - 0.6</td></tr><tr><td style="text-align: center;"><img src="legend/KetersediaanMinggu1_2_06083.png" /></td><td>0.6 - 0.8</td></tr><tr><td style="text-align: center;"><img src="legend/KetersediaanMinggu1_2_0814.png" /></td><td>0.8 - 1</td></tr></table>': layer_KetersediaanMinggu1_2,'Ketersediaan Semua Minggu<br /><table><tr><td style="text-align: center;"><img src="legend/KetersediaanSemuaMinggu_1_0020.png" /></td><td>0 - 0.2</td></tr><tr><td style="text-align: center;"><img src="legend/KetersediaanSemuaMinggu_1_02041.png" /></td><td>0.2 - 0.4</td></tr><tr><td style="text-align: center;"><img src="legend/KetersediaanSemuaMinggu_1_04062.png" /></td><td>0.4 - 0.6</td></tr><tr><td style="text-align: center;"><img src="legend/KetersediaanSemuaMinggu_1_06083.png" /></td><td>0.6 - 0.8</td></tr><tr><td style="text-align: center;"><img src="legend/KetersediaanSemuaMinggu_1_0814.png" /></td><td>0.8 - 1</td></tr></table>': layer_KetersediaanSemuaMinggu_1,"Google Satellite": layer_GoogleSatellite_0,}).addTo(map);
+        setBounds();
+        </script>
+    </body>
+</html>
